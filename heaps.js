@@ -1,0 +1,117 @@
+class PriorityQueue {
+    constructor(arr=[], op='min', comparator) {
+        
+        const map = {};
+        const heap = new Heap(arr.map(obj => obj.weight), op, comparator);
+
+        function updateMap(obj) {
+            if (obj.weight in map) {
+                map[obj.weight].push(obj);
+            } else {
+                map[obj.weight] = [obj];
+            }
+        }
+
+        for (const obj of arr) {
+            updateMap(obj);
+        }
+
+        this.insert = function(obj) {
+            updateMap(obj);
+            heap.insert(obj.weight);
+        }
+
+        this.remove = function() {
+            const res = heap.remove();
+            return res === undefined ? undefined : map[res].shift();
+        }
+
+        this.peek() = () => heap.peek();
+
+        this.size = () => heap.size();
+    }
+}
+
+class Heap {
+    
+    //arr: T, op: (T, T) => T
+    constructor(arr=[], op='min', comparator) {  
+        const heap = arr.slice(0, arr.length);
+        const min = (a, b) => a < b;
+        const max = (a, b) => a > b;
+        if (comparator !== undefined) {
+            op = comparator;
+        } else {
+            op = op === 'min' ? min : max;
+        }
+        
+        function swap(i, j) {
+            let temp = heap[i];
+            heap[i] = heap[j];
+            heap[j] = temp;
+        }
+
+        function percolateUp(i) {
+            let parent = (i - 1) >> 1;
+            while (parent >= 0 && op(heap[i], heap[parent])) {
+                swap(i, parent);
+                i = parent;
+                parent = (i - 1) >> 1;
+            }
+        }
+        
+        function percolateDown(i) {
+            function getChild(i) {
+                let l = (2 * i) + 1;
+                let r = (2 * i) + 2;
+                if (l < heap.length && r < heap.length) {
+                    return op(heap[l], heap[r]) ? l : r;
+                } else if (l < heap.length) {
+                    return l;
+                } else {
+                    return i;
+                }
+            }
+            let child = getChild(i);
+            while (child !== i && op(heap[child], heap[i])) {
+                swap(i, child);
+                i = child;
+                child = getChild(i);
+            }
+        }
+
+        heapify = function() {
+            for (let i = heap.length >> 1 - 1; i >= 0; --i) {
+                percolateDown(i);
+            }
+        }
+        
+        heapify();
+
+        this.insert = function(e) {
+            heap.push(e);
+            percolateUp(heap.length - 1);
+        }
+
+        this.remove = function(e) {
+            if (heap.length <= 0) {
+                return undefined;
+            }
+            let i = e === undefined ? 0 : heap.indexOf(e);
+            if (i === -1) {
+                return undefined;
+            } else if (i === heap.length - 1) {
+                return heap.pop();
+            } else {
+                let result = heap[i];
+                heap[i] = heap.pop();
+                percolateDown(i);
+                return result;
+            }
+        }
+
+        this.peek = () => heap.length <= 0 ? undefined : heap[0];
+        
+        this.size = () => heap.length;
+    }
+}
