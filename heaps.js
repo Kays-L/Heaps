@@ -1,45 +1,11 @@
-class PriorityQueue {
-    constructor(arr=[], op='min', comparator) {
-        
-        const map = {};
-        const heap = new Heap(arr.map(obj => obj.weight), op, comparator);
-
-        function updateMap(obj) {
-            if (obj.weight in map) {
-                map[obj.weight].push(obj);
-            } else {
-                map[obj.weight] = [obj];
-            }
-        }
-
-        for (const obj of arr) {
-            updateMap(obj);
-        }
-
-        this.insert = function(obj) {
-            updateMap(obj);
-            heap.insert(obj.weight);
-        }
-
-        this.remove = function() {
-            const res = heap.remove();
-            return res === undefined ? undefined : map[res].shift();
-        }
-
-        this.peek() = () => heap.peek();
-
-        this.size = () => heap.size();
-    }
-}
-
 class Heap {
     
     //arr: T, op: (T, T) => T
-    constructor(arr=[], op='min', comparator) {  
+    constructor({arr = [], op = 'min', comparator = null}) {  
         const heap = arr.slice(0, arr.length);
         const min = (a, b) => a < b;
         const max = (a, b) => a > b;
-        if (comparator !== undefined) {
+        if (comparator !== null) {
             op = comparator;
         } else {
             op = op === 'min' ? min : max;
@@ -80,7 +46,7 @@ class Heap {
             }
         }
 
-        heapify = function() {
+        function heapify() {
             for (let i = heap.length >> 1 - 1; i >= 0; --i) {
                 percolateDown(i);
             }
@@ -95,11 +61,11 @@ class Heap {
 
         this.remove = function(e) {
             if (heap.length <= 0) {
-                return undefined;
+                return null;
             }
             let i = e === undefined ? 0 : heap.indexOf(e);
             if (i === -1) {
-                return undefined;
+                return null;
             } else if (i === heap.length - 1) {
                 return heap.pop();
             } else {
@@ -110,8 +76,21 @@ class Heap {
             }
         }
 
-        this.peek = () => heap.length <= 0 ? undefined : heap[0];
+        this.pop = function() {
+            if (heap.length <= 0) {
+                return null;
+            } else {
+                let result = heap[0];
+                heap[0] = heap.pop();
+                percolateDown(0);
+                return result;
+            }
+        }
+
+        this.peek = () => heap.length <= 0 ? null : heap[0];
         
         this.size = () => heap.length;
     }
 }
+
+export default Heap;

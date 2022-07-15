@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "heaps.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
 }
