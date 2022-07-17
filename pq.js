@@ -4,7 +4,7 @@ class PriorityQueue {
     constructor({arr = [], op = 'min', comparator = null}) {
         
         const map = {};
-        const heap = new Heap(arr.map(obj => obj.weight), op, comparator);
+        const heap = new Heap({arr: arr.map(obj => obj.weight), op: op, comparator: comparator});
 
         function updateMap(obj) {
             if (obj.weight in map) {
@@ -24,11 +24,11 @@ class PriorityQueue {
         }
 
         this.remove = function(e) {
-            const res = heap.remove(e);
-            return res === undefined ? undefined : map[res].shift();
+            const res = e === undefined ? heap.remove() : heap.remove(e.weight);
+            return res === null ? null : map[res].shift();
         }
 
-        this.peek() = () => heap.peek();
+        this.peek = () => heap.size() > 0 ? map[heap.peek()][0] : null;
 
         this.size = () => heap.size();
     }

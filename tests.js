@@ -70,7 +70,7 @@ describe('new Heap()', () => {
 			}
 		});
 
-		it('it maintains greatest item at root given random stream', () => {
+		it('it maintains lowest item at root given random stream', () => {
 			let min = Infinity;
 			for (let i = 0; i <= 50; ++i) {
 				let rand = Math.floor(Math.random());
@@ -202,23 +202,23 @@ describe('new Heap()', () => {
 });
 
 describe('new PriorityQueue()', () => {
-	const asc = (a, b) => (a <= b ? -1 : 1);
-	const desc = (a, b) => (a >= b ? -1 : 1);
+	const asc = (a, b) => (a.weight <= b.weight ? -1 : 1);
+	const desc = (a, b) => (a.weight >= b.weight ? -1 : 1);
 
 	function emptyTests(pq) {
 		assert.equal(pq.size(), 0);
 		assert.equal(pq.peek(), null);
 		assert.equal(pq.remove(), null);
-		assert.equal(pq.remove(Math.floor(Math.random() * 100)), null);
+		assert.equal(pq.remove(pqobj(Math.floor(Math.random() * 100))), null);
 	}
+
+    function pqobj(weight) {
+        return { weight };
+    }
 
 	describe('default heapification', () => {
 		let arr;
 		let pq;
-
-		function pqobj(weight) {
-			return { weight };
-		}
 
 		before(() => {
 			arr = [];
@@ -250,7 +250,7 @@ describe('new PriorityQueue()', () => {
 		let pq;
 
 		beforeEach(() => {
-			pq = new new PriorityQueue({ op: 'min' });
+			pq = new PriorityQueue({ op: 'min' });
 		});
 
 		it('increases size of pq by one', () => {
@@ -268,18 +268,18 @@ describe('new PriorityQueue()', () => {
 
 		it('it maintains lowest item at root given decreasing stream', () => {
 			for (let i = 50; i >= 0; --i) {
-				pq.insert(i);
-				assert.equal(pq.peek(), i);
+				pq.insert(pqobj(i));
+				assert.equal(pq.peek().weight, i);
 			}
 		});
 
-		it('it maintains greatest item at root given random stream', () => {
+		it('it maintains lowest item at root given random stream', () => {
 			let min = Infinity;
 			for (let i = 0; i <= 50; ++i) {
 				let rand = Math.floor(Math.random());
 				min = Math.min(min, rand);
-				pq.insert(rand);
-				assert.equal(pq.peek(), min);
+				pq.insert(pqobj(rand));
+				assert.equal(pq.peek().weight, min);
 			}
 		});
 	});
@@ -288,7 +288,7 @@ describe('new PriorityQueue()', () => {
 		let pq;
 
 		beforeEach(() => {
-			pq = new pq({ op: 'max' });
+			pq = new PriorityQueue({ op: 'max' });
 		});
 
 		it('increases size of pq by one', () => {
@@ -306,8 +306,8 @@ describe('new PriorityQueue()', () => {
 
 		it('it maintains greatest item at root given increasing stream', () => {
 			for (let i = 0; i <= 50; ++i) {
-				pq.insert(i);
-				assert.equal(pq.peek(), i);
+				pq.insert(pqobj(i));
+				assert.equal(pq.peek().weight, i);
 			}
 		});
 
@@ -316,8 +316,8 @@ describe('new PriorityQueue()', () => {
 			for (let i = 0; i <= 50; ++i) {
 				let rand = Math.floor(Math.random());
 				max = Math.max(max, rand);
-				pq.insert(rand);
-				assert.equal(pq.peek(), max);
+				pq.insert(pqobj(rand));
+				assert.equal(pq.peek().weight, max);
 			}
 		});
 	});
@@ -326,13 +326,13 @@ describe('new PriorityQueue()', () => {
 		let pq;
 
 		before(() => {
-			pq = new new PriorityQueue({});
+			pq = new PriorityQueue({});
 		});
 
 		describe('remove(e)', () => {
 			it('returns null', () => {
-				let e = Math.floor(Math.random() * 1000000);
-				assert.equal(pq.remove(e), null);
+				let obj = pqobj(Math.floor(Math.random() * 1000000));
+				assert.equal(pq.remove(obj), null);
 			});
 		});
 
@@ -365,7 +365,7 @@ describe('new PriorityQueue()', () => {
 				const arr = new Array(i);
 				arrs.push(arr);
 				for (let j = 0; j < i; ++j) {
-					arr[j] = Math.floor(Math.random() * 1000);
+					arr[j] = pqobj(Math.floor(Math.random() * 1000));
 				}
 				pqs.push(new PriorityQueue({ arr: arr, op: 'min' }));
 			}
@@ -373,7 +373,7 @@ describe('new PriorityQueue()', () => {
 
 		it('returns null when argument e is not in pqs of different sizes', () => {
 			for (let i = 0; i < pqs.length; ++i) {
-				assert.equal(pqs[i].remove(Math.floor(Math.random() * 10000) + 1000), null);
+				assert.equal(pqs[i].remove(pqobj(Math.floor(Math.random() * 10000) + 1000)), null);
 			}
 		});
 
@@ -392,7 +392,7 @@ describe('new PriorityQueue()', () => {
 			for (let i = 0; i < pqs.length; ++i) {
 				let runningMin = -Infinity;
 				for (let j = 0; j < arrs[i].length; ++j) {
-					let cur = pqs[i].remove();
+					let cur = pqs[i].remove().weight;
 					assert.ok(cur >= runningMin);
 					runningMin = cur;
 				}
