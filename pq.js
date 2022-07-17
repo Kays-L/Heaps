@@ -1,7 +1,7 @@
 import Heap from './heaps.js'
 
 class PriorityQueue {
-    constructor(arr=[], op='min', comparator) {
+    constructor({arr = [], op = 'min', comparator = null}) {
         
         const map = {};
         const heap = new Heap(arr.map(obj => obj.weight), op, comparator);
@@ -28,13 +28,10 @@ class PriorityQueue {
             return res === undefined ? undefined : map[res].shift();
         }
 
-        this.pop = function() {
-            const res = heap.pop();
-            return res === undefined ? undefined : map[res].shift();
-        }
-
         this.peek() = () => heap.peek();
 
         this.size = () => heap.size();
     }
 }
+
+export default PriorityQueue;

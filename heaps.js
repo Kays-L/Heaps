@@ -76,17 +76,6 @@ class Heap {
             }
         }
 
-        this.pop = function() {
-            if (heap.length <= 0) {
-                return null;
-            } else {
-                let result = heap[0];
-                heap[0] = heap.pop();
-                percolateDown(0);
-                return result;
-            }
-        }
-
         this.peek = () => heap.length <= 0 ? null : heap[0];
         
         this.size = () => heap.length;
